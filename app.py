@@ -44,9 +44,21 @@ st.markdown(
 
 # Helper functions
 def load_data():
-    """Load data from CSV file"""
+    """Load data from CSV file or default Excel file"""
     if DATA_FILE.exists():
         return pd.read_csv(DATA_FILE)
+    
+    # Load default data from project_data.xlsx if no CSV exists
+    default_excel = DATA_DIR / "project_data.xlsx"
+    if default_excel.exists():
+        try:
+            df = pd.read_excel(default_excel)
+            # Save as CSV for faster future access
+            save_data(df)
+            return df
+        except Exception as e:
+            st.warning(f"Could not load default data: {str(e)}")
+    
     return pd.DataFrame()
 
 
